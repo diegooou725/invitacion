@@ -254,6 +254,8 @@
         .weather-widget {
             margin: 20px 0 40px; border-radius: 12px;
             overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            /* IMPORTANTE: Oculto por defecto, JS lo activará en la fecha correcta */
+            display: none;
         }
 
         /* --- 8. BOTONES --- */
@@ -343,7 +345,7 @@
             </p>
         </div>
 
-        <div class="weather-widget">
+        <div id="weather-widget" class="weather-widget">
             <a class="weatherwidget-io" 
                href="https://forecast7.com/es/20d52n99d89/tequisquiapan/" 
                data-label_1="TEQUISQUIAPAN" 
@@ -433,6 +435,21 @@
         galleryWrapper.addEventListener('mouseleave', () => galleryWrapper.classList.remove('paused'));
         galleryWrapper.addEventListener('touchstart', () => galleryWrapper.classList.add('paused'), { passive: true });
         galleryWrapper.addEventListener('touchend', () => galleryWrapper.classList.remove('paused'));
+        
+        /* --- LÓGICA DEL CLIMA --- */
+        // Ejecutar al cargar
+        (function() {
+            const now = new Date();
+            // FECHA OBJETIVO: 15 de Febrero de 2026
+            // (Mes 1 es Febrero porque Enero es 0)
+            const targetDate = new Date(2026, 1, 15);
+            
+            // Si la fecha actual es mayor o igual a la fecha objetivo, mostrar el div
+            if (now >= targetDate) {
+                const widget = document.getElementById('weather-widget');
+                if(widget) widget.style.display = 'block';
+            }
+        })();
     </script>
 </body>
 </html>
