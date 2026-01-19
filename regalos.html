@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mesa de Regalos | Ramón</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
+    <style>
+        /* --- ESTILOS BASE --- */
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #333333;
+            --text-light: #666666;
+            --gold: #C5A059;
+            --btn-black: #222222;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            text-align: center;
+            padding: 20px 0 40px; /* Menos padding arriba para el botón */
+            overflow-x: hidden;
+        }
+        .container-narrow {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 10px; margin-top: 20px; }
+        h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin: 40px 0 20px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
+        .subtitle { font-size: 1rem; color: var(--text-light); margin-bottom: 30px; line-height: 1.6; font-weight: 300; }
+
+        /* --- BOTÓN REGRESAR (NUEVO ESTILO GRANDE) --- */
+        .btn-back-top {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f5f5;
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e0e0e0;
+        }
+        .btn-back-top:hover {
+            background-color: var(--gold);
+            color: white;
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
+        .btn-back-top span { margin-right: 8px; font-size: 1.2rem; }
+
+
+        /* --- SECCIÓN 1: AVATAR --- */
+        .avatar-container {
+            background: #fafafa;
+            border-radius: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+        .avatar-frame {
+            width: 250px; height: 300px; margin: 0 auto 20px;
+            overflow: hidden; border-radius: 4px;
+            display: flex; align-items: flex-end; justify-content: center;
+        }
+        #avatar-img { 
+            max-width: 100%; 
+            max-height: 100%; 
+            object-fit: contain; 
+            transition: opacity 0.3s ease; 
+        }
+
+        #outfit-details-box {
+            background: white; border: 2px dashed var(--gold);
+            padding: 15px; border-radius: 8px; margin-bottom: 20px;
+            min-height: 80px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            transition: border-color 0.3s; 
+        }
+        #outfit-text { font-weight: bold; color: var(--text-main); font-size: 1.1rem; }
+        .outfit-note { display: block; font-size: 0.9rem; color: var(--text-light); margin-top: 5px; font-style: italic; }
+        .color-palette { display: flex; gap: 10px; margin-top: 10px; }
+        .color-swatch { width: 20px; height: 20px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
+
+        .outfit-buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .btn-outfit {
+            background: white; border: 1px solid #ddd; padding: 10px 15px;
+            border-radius: 30px; cursor: pointer; font-family: 'Lato', sans-serif;
+            font-weight: bold; color: var(--text-light); transition: all 0.2s;
+        }
+
+        /* --- SECCIÓN 2: CARRUSEL SWIPER --- */
+        .gift-carousel {
+            width: 100%;
+            padding: 20px 0 40px;
+        }
+        .swiper-wrapper {
+            transition-timing-function: linear; /* Clave para movimiento continuo fluido */
+        }
+        .swiper-slide {
+            width: 200px; /* Ancho tarjeta */
+            height: 250px; /* Alto tarjeta */
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            position: relative;
+        }
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .gift-title-overlay {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            color: white;
+            padding: 20px 10px 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-narrow">
+        <a href="index.html" class="btn-back-top">
+            <span>←</span> Regresar a la Invitación
+        </a>
+
+        <h1>Mesa de Regalos</h1>
+        <p class="subtitle">
+            Su presencia es el mejor regalo. Pero si quieren tener un detalle conmigo, aquí les dejo algunas pistas.
+        </p>
+
+        <h2>Ideas de Ropa</h2>
+        <p style="font-size: 0.9rem; margin-bottom: 20px;">Dale clic a los estilos para ver mis tallas 👇</p>
+
+        <div class="avatar-container">
+            <div class="avatar-frame">
+                <img id="avatar-img" src="avatar-base.png" alt="Avatar Ramón">
+            </div>
+
+            <div id="outfit-details-box">
+                <span id="outfit-text">¡Hola! Selecciona un estilo abajo.</span>
+                <span id="outfit-note" class="outfit-note">Te mostraré mis tallas y los colores que me gustan.</span>
+                <div id="color-palette-container" class="color-palette"></div>
+            </div>
+
+            <div class="outfit-buttons">
+                <button class="btn-outfit" onclick="setOutfit('diario', this)">👕 Casual Diario</button>
+                <button class="btn-outfit" onclick="setOutfit('fresco', this)">☀️ Estilo Fresco</button>
+                <button class="btn-outfit" onclick="setOutfit('abrigo', this)">🧥 Para el Frío</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-narrow">
+        <h2>Otras Ideas de Regalo</h2>
+        <p style="font-size: 0.9rem; margin-bottom: 10px;">Desliza o espera a que se muevan...</p>
+    </div>
+
+    <div class="swiper gift-carousel">
+        <div class="swiper-wrapper">
+            
+            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=500&q=80" loading="lazy"><div class="gift-title-overlay">Reloj Clásico</div></div>
+            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1627123424574-724758594e93?w=500&q=80" loading="lazy"><div class="gift-title-overlay">Cartera de Piel</div></div>
+            <div class="swiper-slide"><img src="https://images.pexels.com/photos/3951748/pexels-photo-3951748.jpeg?auto=compress&cs=tinysrgb&w=600" loading="lazy"><div class="gift-title-overlay">Kit de Parrillada</div></div>
+            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80" loading="lazy"><div class="gift-title-overlay">Audífonos</div></div>
+            <div class="swiper-slide"><img src="https://images.pexels.com/photos/602750/pexels-photo-602750.jpeg?auto=compress&cs=tinysrgb&w=600" loading="lazy"><div class="gift-title-overlay">Botella Premium</div></div>
+            <div class="swiper-slide"><img src="https://images.pexels.com/photos/175039/pexels-photo-175039.jpeg?auto=compress&cs=tinysrgb&w=600" loading="lazy"><div class="gift-title-overlay">Set de Herramientas</div></div>
+            
+            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=500&q=80" loading="lazy"><div class="gift-title-overlay">Reloj Clásico</div></div>
+            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1627123424574-724758594e93?w=500&q=80" loading="lazy"><div class="gift-title-overlay">Cartera de Piel</div></div>
+            <div class="swiper-slide"><img src="https://images.pexels.com/photos/3951748/pexels-photo-3951748.jpeg?auto=compress&cs=tinysrgb&w=600" loading="lazy"><div class="gift-title-overlay">Kit de Parrillada</div></div>
+            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80" loading="lazy"><div class="gift-title-overlay">Audífonos</div></div>
+            <div class="swiper-slide"><img src="https://images.pexels.com/photos/602750/pexels-photo-602750.jpeg?auto=compress&cs=tinysrgb&w=600" loading="lazy"><div class="gift-title-overlay">Botella Premium</div></div>
+            <div class="swiper-slide"><img src="https://images.pexels.com/photos/175039/pexels-photo-175039.jpeg?auto=compress&cs=tinysrgb&w=600" loading="lazy"><div class="gift-title-overlay">Set de Herramientas</div></div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        /* --- 1. CONFIGURACIÓN DEL AVATAR --- */
+        const outfitsData = {
+            'diario': {
+                imgSrc: 'avatar-polo.png', 
+                text: 'Playera Polo: Talla M | Jeans: Talla 32',
+                note: '"Mis favoritas. Colores que uso mucho:"',
+                colors: ['#1a2a4a', '#722f37', '#222222', '#4a4a4a'],
+                accentColor: '#3498db' 
+            },
+            'fresco': {
+                imgSrc: 'avatar-lino.png',
+                text: 'Camisa (Lino/Manga Corta): Talla M | Pantalón Chino: 32x32',
+                note: '"Ideal para el calorcito. Me gustan los tonos naturales:"',
+                colors: ['#e8e0d5', '#ffffff', '#78866b', '#aaddff'],
+                accentColor: '#C5A059'
+            },
+            'abrigo': {
+                imgSrc: 'avatar-chamarra.png',
+                text: 'Chamarra o Suéter Ligero: Talla M',
+                note: '"Estilos sobrios y versátiles:"',
+                colors: ['#111111', '#777777', '#4a3b2a', '#1a2a4a'],
+                accentColor: '#555555'
+            }
+        };
+
+        function setOutfit(style, clickedButton) {
+            const data = outfitsData[style];
+            const imgElement = document.getElementById('avatar-img');
+            const textElement = document.getElementById('outfit-text');
+            const noteElement = document.getElementById('outfit-note');
+            const detailsBox = document.getElementById('outfit-details-box');
+            const paletteContainer = document.getElementById('color-palette-container');
+
+            imgElement.style.opacity = 0;
+            setTimeout(() => {
+                imgElement.src = data.imgSrc;
+                imgElement.style.opacity = 1;
+            }, 150);
+
+            textElement.innerText = data.text;
+            noteElement.innerText = data.note;
+
+            paletteContainer.innerHTML = '';
+            data.colors.forEach(color => {
+                const swatch = document.createElement('div');
+                swatch.className = 'color-swatch';
+                swatch.style.backgroundColor = color;
+                paletteContainer.appendChild(swatch);
+            });
+
+            document.querySelectorAll('.btn-outfit').forEach(btn => {
+                btn.style.backgroundColor = 'white';
+                btn.style.color = 'var(--text-light)';
+                btn.style.borderColor = '#ddd';
+                btn.style.boxShadow = 'none';
+            });
+            clickedButton.style.backgroundColor = data.accentColor;
+            clickedButton.style.color = 'white';
+            clickedButton.style.borderColor = data.accentColor;
+            clickedButton.style.boxShadow = `0 4px 10px ${data.accentColor}4d`;
+            detailsBox.style.borderColor = data.accentColor;
+        }
+
+        /* --- 2. CONFIGURACIÓN DEL CARRUSEL (FLUJO CONTINUO RÁPIDO) --- */
+        const swiper = new Swiper('.gift-carousel', {
+            slidesPerView: 'auto',  
+            spaceBetween: 20,       
+            loop: true,             
+            freeMode: true,         // Permite arrastrar libremente sin "escalones"
+            
+            // Movimiento automático continuo (tipo cinta)
+            autoplay: {
+                delay: 0,           // Sin pausa entre slides
+                disableOnInteraction: false, 
+            },
+            speed: 3000,            // Velocidad: Menor número = Más rápido. 3000 es fluido.
+            
+            grabCursor: true
+        });
+    </script>
+
+</body>
+</html>

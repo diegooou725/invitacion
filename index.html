@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramón | 50 Años</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- VARIABLES DE DISEÑO --- */
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #333333;
+            --text-light: #666666;
+            --gold: #C5A059;       /* Dorado elegante */
+            --btn-black: #222222;  /* Negro suave para botones */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            text-align: center;
+        }
+
+        /* --- 1. PORTADA --- */
+        #cover-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 9999;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .cover-img {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0.7; 
+        }
+
+        .cover-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            padding: 0 20px;
+        }
+
+        .enter-btn {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 15px 50px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: background 0.3s;
+            font-family: 'Lato', sans-serif;
+        }
+        
+        .enter-btn:hover { background: rgba(255,255,255,0.2); }
+        .hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+        /* --- 2. CONTENEDOR PRINCIPAL --- */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px 100px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease;
+        }
+
+        .visible { opacity: 1; transform: translateY(0); }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .casual-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: var(--text-main);
+            font-weight: 300;
+        }
+
+        /* --- 3. CUENTA REGRESIVA --- */
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 15px; 
+            margin: 40px 0;
+        }
+        
+        .time-box { 
+            min-width: 55px; 
+            position: relative;
+        }
+        
+        .time-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem; 
+            color: var(--gold);
+            display: block;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums; 
+        }
+        
+        .ticking { animation: pulse 1s infinite; }
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .time-lbl { 
+            font-size: 0.65rem; 
+            text-transform: uppercase; 
+            color: #999; 
+            letter-spacing: 1px;
+        }
+
+        /* --- 4. CARRUSEL INFINITO POLAROID --- */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } 
+        }
+
+        .gallery-wrapper {
+            position: relative;
+            width: 100vw;
+            left: 50%;
+            transform: translateX(-50%);
+            overflow: hidden;
+            background-color: transparent; 
+            padding: 20px 0;
+            margin: 20px 0 40px 0;
+            cursor: grab;
+        }
+        
+        .gallery-wrapper::before, .gallery-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0; width: 10%; height: 100%;
+            pointer-events: none; z-index: 2;
+        }
+        .gallery-wrapper::before {
+            left: 0; background: linear-gradient(to right, #fff 0%, rgba(255,255,255, 0) 100%);
+        }
+        .gallery-wrapper::after {
+            right: 0; background: linear-gradient(to left, #fff 0%, rgba(255,255,255, 0) 100%);
+        }
+
+        .collage-track {
+            display: flex;
+            flex-wrap: nowrap;
+            width: max-content; 
+            animation: scroll 100s linear infinite;
+            will-change: transform;
+            align-items: center;
+        }
+        
+        .gallery-wrapper.paused .collage-track { animation-play-state: paused; }
+
+        .collage-track img {
+            width: 220px;
+            height: 260px; 
+            object-fit: cover;
+            background-color: white;
+            padding: 10px 10px 50px 10px; 
+            box-shadow: 2px 5px 15px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+            margin: 0 -15px; 
+            transition: transform 0.3s ease, z-index 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .collage-track img:nth-child(odd) { transform: rotate(4deg); z-index: 1; }
+        .collage-track img:nth-child(even) { transform: rotate(-4deg); z-index: 1; }
+        
+        .collage-track img:hover { 
+            transform: scale(1.1) rotate(0deg); 
+            z-index: 10; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        /* --- 5. LIGHTBOX --- */
+        .lightbox {
+            display: none;
+            position: fixed; z-index: 10000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            justify-content: center; align-items: center;
+        }
+        .lightbox-content {
+            max-width: 90%; max-height: 90vh;
+            border: 10px solid white; 
+            border-bottom: 40px solid white; 
+            border-radius: 2px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+        .close-lightbox {
+            position: absolute; top: 20px; right: 30px;
+            color: #fff; font-size: 40px; font-weight: bold;
+            cursor: pointer; transition: 0.3s;
+        }
+
+        /* --- 6. DETALLES Y OTROS --- */
+        .details-box {
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 40px 0;
+            margin: 30px 0;
+        }
+        .detail-item { margin-bottom: 30px; }
+        .detail-item:last-child { margin-bottom: 0; }
+        .detail-title { 
+            font-weight: 700; text-transform: uppercase; font-size: 0.85rem; 
+            letter-spacing: 2px; color: var(--gold); margin-bottom: 5px;
+        }
+        .detail-info { font-size: 1.3rem; margin: 5px 0; font-family: 'Playfair Display', serif;}
+        .detail-sub { font-size: 1rem; color: #666; font-family: 'Lato', sans-serif;}
+        .map-link {
+            display: inline-block; margin-top: 8px; color: var(--text-light);
+            text-decoration: underline; font-size: 0.9rem;
+        }
+
+        /* --- 7. WIDGET CLIMA --- */
+        .weather-widget {
+            margin: 20px 0 40px; border-radius: 12px;
+            overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        /* --- 8. BOTONES --- */
+        .action-buttons {
+            display: flex; flex-direction: column; gap: 15px; margin-top: 30px;
+        }
+        .btn {
+            display: block; padding: 16px; text-decoration: none; border-radius: 50px;
+            font-weight: bold; text-transform: uppercase; font-size: 0.9rem;
+            letter-spacing: 1px; transition: transform 0.2s;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-rsvp {
+            background-color: var(--btn-black); color: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        .btn-gift {
+            background-color: white; color: var(--text-main); border: 1px solid #ccc;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="cover-screen">
+        <img src="https://images.unsplash.com/photo-1556103255-4443dbae8e5a?q=80&w=1000&auto=format&fit=crop" class="cover-img" alt="Ramon">
+        <div class="cover-content">
+            <h1 style="font-size: 3.5rem; color: white; margin-bottom: 0;">Ramón</h1>
+            <p style="letter-spacing: 4px; font-size: 1.1rem; text-transform: uppercase;">50 Años</p>
+            <button class="enter-btn" onclick="openInvite()">Entrar</button>
+        </div>
+    </div>
+
+    <main class="container" id="main-content">
+        
+        <h1>Ramón Reyes</h1>
+        <p class="subtitle">¡Llegamos al 5° piso!</p>
+
+        <p class="casual-text">
+            Dicen que los 50 son los nuevos 30, pero con más experiencia.<br>
+            Quiero festejar este medio siglo con la gente que más quiero.
+            Nada formal, solo buena comida, tragos y grandes amigos.
+        </p>
+
+        <div class="countdown">
+            <div class="time-box">
+                <span class="time-num" id="d">00</span>
+                <span class="time-lbl">Días</span>
+            </div>
+            <div class="time-box">
+                <span class="time-num" id="h">00</span>
+                <span class="time-lbl">Hrs</span>
+            </div>
+            <div class="time-box">
+                <span class="time-num" id="m">00</span>
+                <span class="time-lbl">Min</span>
+            </div>
+            <div class="time-box">
+                <span class="time-num ticking" id="s">00</span>
+                <span class="time-lbl">Seg</span>
+            </div>
+        </div>
+
+        <div class="details-box">
+            <div class="detail-item">
+                <div class="detail-title">¿Cuándo?</div>
+                <div class="detail-info">Sábado 21 de Febrero</div>
+                <div class="detail-sub">A la 1:00 de la tarde</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-title">¿Dónde?</div>
+                <div class="detail-info">Tequisquiapan, Qro.</div>
+                <div class="detail-sub">Salón "El Lugar"</div>
+                <a href="https://maps.google.com" target="_blank" class="map-link">Ver Ubicación en Mapa</a>
+            </div>
+        </div>
+
+        <div style="margin: 40px 0 20px;">
+            <div class="detail-title">Código de Vestimenta</div>
+            <p class="casual-text" style="font-size: 1rem; margin-top: 10px; margin-bottom: 0;">
+                No hay etiqueta rigurosa, vénganse cómodos y listos para disfrutar.<br>
+                <span style="display:block; margin-top:15px; color: #7f8c8d; font-style: italic; font-size: 0.95rem; border-left: 3px solid var(--gold); padding-left: 10px; text-align: left;">
+                    "Esperamos que haga calorcito, pero febrero es impredecible. 
+                    Les dejé el reporte aquí abajo 👇. Fíjense cómo va a estar el <strong style="color:#000;">SÁBADO</strong> para ver si toca lentes de sol o chamarra."
+                </span>
+            </p>
+        </div>
+
+        <div class="weather-widget">
+            <a class="weatherwidget-io" 
+               href="https://forecast7.com/es/20d52n99d89/tequisquiapan/" 
+               data-label_1="TEQUISQUIAPAN" 
+               data-label_2="Pronóstico" 
+               data-font="Lato" 
+               data-icons="Climacons Animated" 
+               data-mode="Forecast" 
+               data-days="7" 
+               data-theme="pure"
+               data-textcolor="#333333" 
+               data-highcolor="#000000"   
+               data-lowcolor="#cccccc" >TEQUISQUIAPAN Clima</a>
+               
+            <script>
+            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+            </script>
+        </div>
+
+        <div class="detail-title" style="margin-top: 40px;">Galería de Recuerdos</div>
+        
+        <div class="gallery-wrapper" id="gallery-wrapper">
+            <div class="collage-track">
+                <img src="https://picsum.photos/id/1015/300/400" onclick="openLightbox(this)" loading="lazy">
+                <img src="https://picsum.photos/id/1016/300/400" onclick="openLightbox(this)" loading="lazy">
+                <img src="https://picsum.photos/id/1018/300/400" onclick="openLightbox(this)" loading="lazy">
+                <img src="https://picsum.photos/id/1019/300/400" onclick="openLightbox(this)" loading="lazy">
+                <img src="https://picsum.photos/id/1020/300/400" onclick="openLightbox(this)" loading="lazy">
+                <img src="https://picsum.photos/id/1021/300/400" onclick="openLightbox(this)" loading="lazy">
+                
+                <img src="https://picsum.photos/id/1015/300/400" onclick="openLightbox(this)" loading="lazy">
+                <img src="https://picsum.photos/id/1016/300/400" onclick="openLightbox(this)" loading="lazy">
+                <img src="https://picsum.photos/id/1018/300/400" onclick="openLightbox(this)" loading="lazy">
+                <img src="https://picsum.photos/id/1019/300/400" onclick="openLightbox(this)" loading="lazy">
+                <img src="https://picsum.photos/id/1020/300/400" onclick="openLightbox(this)" loading="lazy">
+                <img src="https://picsum.photos/id/1021/300/400" onclick="openLightbox(this)" loading="lazy">
+            </div>
+        </div>
+        <div class="action-buttons">
+            <a href="regalos.html" class="btn btn-gift">🎁 Ver Mesa de Regalos</a>
+            
+            <a href="https://wa.me/5211234567890?text=¡Hola!%20Confirmo%20mi%20asistencia%20al%20cumpleaños%20de%20Ramón." class="btn btn-rsvp">
+                Confirmar Asistencia
+            </a>
+        </div>
+
+    </main>
+
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="close-lightbox">×</span>
+        <img class="lightbox-content" id="lightbox-img">
+    </div>
+
+    <script>
+        function openInvite() {
+            document.getElementById('cover-screen').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('main-content').classList.add('visible');
+            }, 300);
+        }
+
+        const eventDate = new Date(2026, 1, 21, 13, 0, 0).getTime();
+        const timer = setInterval(() => {
+            const now = new Date().getTime();
+            const gap = eventDate - now;
+            if (gap < 0) { clearInterval(timer); return; }
+            const d = Math.floor(gap / (1000 * 60 * 60 * 24));
+            const h = Math.floor((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((gap % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((gap % (1000 * 60)) / 1000);
+            document.getElementById('d').innerText = d < 10 ? '0' + d : d;
+            document.getElementById('h').innerText = h < 10 ? '0' + h : h;
+            document.getElementById('m').innerText = m < 10 ? '0' + m : m;
+            document.getElementById('s').innerText = s < 10 ? '0' + s : s;
+        }, 1000);
+
+        function openLightbox(element) {
+            document.getElementById('lightbox').style.display = 'flex';
+            document.getElementById('lightbox-img').src = element.src;
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+
+        const galleryWrapper = document.getElementById('gallery-wrapper');
+        galleryWrapper.addEventListener('mouseenter', () => galleryWrapper.classList.add('paused'));
+        galleryWrapper.addEventListener('mouseleave', () => galleryWrapper.classList.remove('paused'));
+        galleryWrapper.addEventListener('touchstart', () => galleryWrapper.classList.add('paused'), { passive: true });
+        galleryWrapper.addEventListener('touchend', () => galleryWrapper.classList.remove('paused'));
+    </script>
+</body>
+</html>
