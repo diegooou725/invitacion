@@ -92,22 +92,33 @@
 
         /* --- 4. GALERÍA DE 3 FILAS (OPTIMIZADA) --- */
         .gallery-section {
+            position: relative; /* Necesario para los efectos de luz */
             width: 100%;
             overflow: hidden;
             background-color: #fafafa;
             padding: 20px 0;
             margin: 40px 0;
-            /* "No se pueda tocar": Desactivamos eventos del mouse/dedo */
-            pointer-events: none; 
+            pointer-events: none; /* Sin interacción */
             user-select: none;
         }
+
+        /* EFECTO DE LUZ DESVANECIDA EN LAS ORILLAS */
+        .gallery-section::before, .gallery-section::after {
+            content: '';
+            position: absolute;
+            top: 0; width: 15%; height: 100%;
+            z-index: 2; pointer-events: none;
+        }
+        .gallery-section::before { left: 0; background: linear-gradient(to right, #fafafa, rgba(250,250,250,0)); }
+        .gallery-section::after { right: 0; background: linear-gradient(to left, #fafafa, rgba(250,250,250,0)); }
+
 
         .row-wrapper {
             position: relative;
             width: 100%;
             display: flex;
             overflow: hidden;
-            margin-bottom: 15px; /* Espacio entre filas */
+            margin-bottom: 15px;
         }
 
         .collage-track {
@@ -115,12 +126,11 @@
             flex-wrap: nowrap;
             width: max-content; 
             align-items: center;
-            will-change: transform; /* Optimización para GPU */
+            will-change: transform; 
         }
 
         .collage-track img {
-            /* TAMAÑO MÓVIL OPTIMIZADO: Altura más pequeña por defecto */
-            height: 120px; 
+            height: 120px; /* Móvil */
             width: auto; 
             object-fit: cover;
             border-radius: 4px;
@@ -128,15 +138,14 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        /* En pantallas grandes (PC), las fotos se ven más grandes */
+        /* PC: Fotos más grandes */
         @media (min-width: 768px) {
             .collage-track img { height: 180px; margin: 0 10px; }
         }
 
-        /* ANIMACIONES */
-        /* Velocidad lenta: 200s (puedes subir el número para hacerlo más lento) */
-        .scroll-left { animation: scrollLeft 200s linear infinite; }
-        .scroll-right { animation: scrollRight 200s linear infinite; }
+        /* ANIMACIONES (Misma velocidad para todos: 240s) */
+        .scroll-left { animation: scrollLeft 240s linear infinite; }
+        .scroll-right { animation: scrollRight 240s linear infinite; }
 
         @keyframes scrollLeft {
             0% { transform: translateX(0); }
@@ -215,7 +224,8 @@
             <p class="casual-text" style="font-size: 1rem; margin-top: 10px; margin-bottom: 0;">
                 No hay etiqueta rigurosa, vénganse cómodos.<br>
                 <span style="display:block; margin-top:15px; color: #7f8c8d; font-style: italic; font-size: 0.95rem; border-left: 3px solid var(--gold); padding-left: 10px; text-align: left;">
-                    "Les dejé el reporte del clima aquí abajo 👇."
+                    "Esperamos que haga calorcito, pero febrero es impredecible. 
+                    Les dejé el reporte aquí abajo 👇. Fíjense cómo va a estar el <strong style="color:#000;">SÁBADO</strong> para ver si toca lentes de sol o chamarra."
                 </span>
             </p>
         </div>
@@ -266,7 +276,7 @@
         /* --- 2. GENERADOR DE GALERÍA DE 3 FILAS ALEATORIAS --- */
         const totalPhotos = 40;
         
-        // Función para mezclar (barajar) las fotos aleatoriamente
+        // Mezclar aleatoriamente
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -275,30 +285,21 @@
             return array;
         }
 
-        // Función para llenar una fila
         function populateRow(trackId) {
             const track = document.getElementById(trackId);
             
-            // 1. Crear array del 1 al 40
             let photos = [];
             for (let i = 1; i <= totalPhotos; i++) photos.push(i);
             
-            // 2. Mezclar el orden para esta fila específica
             photos = shuffleArray(photos);
-
-            // 3. Generar HTML (Se duplica el array para el efecto infinito)
-            // Usamos un Fragmento de Documento para optimizar la carga (solo 1 repintado)
             const fragment = document.createDocumentFragment();
-            
-            // Duplicamos la lista 2 veces para asegurar que llene pantallas anchas y sea infinito
-            const loopPhotos = [...photos, ...photos]; 
+            const loopPhotos = [...photos, ...photos]; // Duplicar para infinito
 
             loopPhotos.forEach(num => {
                 const img = document.createElement('img');
-                // NOTA: Asegúrate de que las fotos estén en la misma carpeta o ajusta la ruta aquí
-                // Si están en una carpeta llamada "Original", cambia a: `Original/${num}.jpeg`
-                img.src = `${num}.jpeg`; 
-                img.loading = 'lazy'; // Carga diferida para velocidad
+                // RUTA CORREGIDA HACIA LA CARPETA 'Original/'
+                img.src = `Original/${num}.jpeg`; 
+                img.loading = 'lazy'; 
                 img.alt = 'Recuerdo';
                 fragment.appendChild(img);
             });
