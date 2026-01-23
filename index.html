@@ -90,7 +90,7 @@
         @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(0.98); } 100% { opacity: 1; transform: scale(1); } }
         .time-lbl { font-size: 0.65rem; text-transform: uppercase; color: #999; letter-spacing: 1px; }
 
-        /* --- 4. GALERÍA DE 3 FILAS (OPTIMIZADA) --- */
+        /* --- 4. GALERÍA DE 3 FILAS (SÚPER LENTA) --- */
         .gallery-section {
             position: relative;
             width: 100%;
@@ -98,26 +98,26 @@
             background-color: #fafafa;
             padding: 20px 0;
             margin: 40px 0;
-            pointer-events: none; /* No se puede tocar/detener */
+            pointer-events: none; /* Sin tocar/detener */
             user-select: none;
         }
 
-        /* Máscaras de luz a los lados */
+        /* Máscaras de luz a los lados (Color ajustado al fondo #fafafa) */
         .gallery-section::before, .gallery-section::after {
             content: '';
             position: absolute;
             top: 0; width: 10%; height: 100%;
             z-index: 2; pointer-events: none;
         }
-        .gallery-section::before { left: 0; background: linear-gradient(to right, #ffffff, rgba(255,255,255,0)); }
-        .gallery-section::after { right: 0; background: linear-gradient(to left, #ffffff, rgba(255,255,255,0)); }
+        .gallery-section::before { left: 0; background: linear-gradient(to right, #fafafa, rgba(250,250,250,0)); }
+        .gallery-section::after { right: 0; background: linear-gradient(to left, #fafafa, rgba(250,250,250,0)); }
 
         .row-wrapper {
             position: relative;
             width: 100%;
             display: flex;
             overflow: hidden;
-            margin-bottom: 12px; /* Espacio entre filas */
+            margin-bottom: 12px; 
         }
 
         .collage-track {
@@ -129,24 +129,23 @@
         }
 
         .collage-track img {
-            /* ALTURA EN MÓVIL */
-            height: 110px; 
+            height: 110px; /* Altura móvil */
             width: auto; 
             object-fit: cover;
             border-radius: 4px;
             margin: 0 5px; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            background-color: #eee; /* Color de fondo mientras carga */
+            background-color: #eee;
         }
 
-        /* ALTURA EN PC */
+        /* Altura PC */
         @media (min-width: 768px) {
             .collage-track img { height: 180px; margin: 0 10px; }
         }
 
-        /* ANIMACIONES (Lentas y suaves) */
-        .scroll-left { animation: scrollLeft 180s linear infinite; }
-        .scroll-right { animation: scrollRight 180s linear infinite; }
+        /* ANIMACIONES (400 SEGUNDOS = MUY LENTO) */
+        .scroll-left { animation: scrollLeft 400s linear infinite; }
+        .scroll-right { animation: scrollRight 400s linear infinite; }
 
         @keyframes scrollLeft {
             0% { transform: translateX(0); }
@@ -274,12 +273,12 @@
             document.getElementById('s').innerText = Math.floor((gap % (1000 * 60)) / 1000).toString().padStart(2, '0');
         }, 1000);
 
-        /* --- 2. GALERÍA AUTOMÁTICA (MODO SIMPLE) --- */
-        // CONFIGURACIÓN:
-        const totalPhotos = 40;     // Cantidad de fotos
-        const extension = '.jpeg';  // SI TUS FOTOS NO CARGAN, CAMBIA ESTO A '.jpg' O '.JPG'
+        /* --- 2. GALERÍA AUTOMÁTICA --- */
+        // Ajuste: 40 fotos, extensión .jpeg
+        const totalPhotos = 40;     
+        const extension = '.jpeg';  
         
-        // Mezclar aleatoriamente
+        // Función para mezclar orden
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -294,21 +293,23 @@
             let photos = [];
             for (let i = 1; i <= totalPhotos; i++) photos.push(i);
             
+            // Mezclamos para que cada fila sea única
             photos = shuffleArray(photos);
+
             const fragment = document.createDocumentFragment();
-            const loopPhotos = [...photos, ...photos]; // Duplicar para infinito
+            // Duplicamos el array para lograr el efecto infinito
+            const loopPhotos = [...photos, ...photos]; 
 
             loopPhotos.forEach(num => {
                 const img = document.createElement('img');
                 
-                // --- AQUÍ ESTÁ EL CAMBIO IMPORTANTE ---
-                // Ahora busca la foto directamente (ej: "1.jpeg") en la misma carpeta.
+                // NOTA: Se asume que las fotos están en la misma carpeta
                 img.src = num + extension; 
                 
                 img.loading = 'lazy'; 
                 img.alt = 'Recuerdo';
                 
-                // Si la imagen falla (ej. era .jpg y no .jpeg), ocúltala para que no se vea el icono roto
+                // Si la imagen falla (error de ruta o extensión), se oculta
                 img.onerror = function() { this.style.display = 'none'; };
 
                 fragment.appendChild(img);
