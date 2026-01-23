@@ -90,7 +90,35 @@
         @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(0.98); } 100% { opacity: 1; transform: scale(1); } }
         .time-lbl { font-size: 0.65rem; text-transform: uppercase; color: #999; letter-spacing: 1px; }
 
-        /* --- 4. GALERÍA DE 3 FILAS (SÚPER LENTA) --- */
+        /* --- 4. INDICADOR DE SCROLL --- */
+        .scroll-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            color: var(--gold);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0; 
+            transition: opacity 0.5s ease;
+            pointer-events: none; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        .bounce { animation: bounce 2s infinite; }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+        .fade-out { opacity: 0 !important; }
+        .show-hint { opacity: 1; }
+
+        /* --- 5. GALERÍA --- */
         .gallery-section {
             position: relative;
             width: 100%;
@@ -98,11 +126,10 @@
             background-color: #fafafa;
             padding: 20px 0;
             margin: 40px 0;
-            pointer-events: none; /* Sin tocar/detener */
+            pointer-events: none; 
             user-select: none;
         }
 
-        /* Máscaras de luz a los lados (Color ajustado al fondo #fafafa) */
         .gallery-section::before, .gallery-section::after {
             content: '';
             position: absolute;
@@ -112,51 +139,24 @@
         .gallery-section::before { left: 0; background: linear-gradient(to right, #fafafa, rgba(250,250,250,0)); }
         .gallery-section::after { right: 0; background: linear-gradient(to left, #fafafa, rgba(250,250,250,0)); }
 
-        .row-wrapper {
-            position: relative;
-            width: 100%;
-            display: flex;
-            overflow: hidden;
-            margin-bottom: 12px; 
-        }
-
-        .collage-track {
-            display: flex;
-            flex-wrap: nowrap;
-            width: max-content; 
-            align-items: center;
-            will-change: transform; 
-        }
-
+        .row-wrapper { position: relative; width: 100%; display: flex; overflow: hidden; margin-bottom: 12px; }
+        .collage-track { display: flex; flex-wrap: nowrap; width: max-content; align-items: center; will-change: transform; }
+        
         .collage-track img {
-            height: 110px; /* Altura móvil */
-            width: auto; 
-            object-fit: cover;
-            border-radius: 4px;
-            margin: 0 5px; 
+            height: 110px; width: auto; object-fit: cover;
+            border-radius: 4px; margin: 0 5px; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             background-color: #eee;
         }
+        @media (min-width: 768px) { .collage-track img { height: 180px; margin: 0 10px; } }
 
-        /* Altura PC */
-        @media (min-width: 768px) {
-            .collage-track img { height: 180px; margin: 0 10px; }
-        }
-
-        /* ANIMACIONES (400 SEGUNDOS = MUY LENTO) */
         .scroll-left { animation: scrollLeft 400s linear infinite; }
         .scroll-right { animation: scrollRight 400s linear infinite; }
 
-        @keyframes scrollLeft {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); } 
-        }
-        @keyframes scrollRight {
-            0% { transform: translateX(-50%); }
-            100% { transform: translateX(0); } 
-        }
+        @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @keyframes scrollRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
 
-        /* --- 5. DETALLES Y OTROS --- */
+        /* --- 6. DETALLES Y OTROS --- */
         .details-box { border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 40px 0; margin: 30px 0; }
         .detail-item { margin-bottom: 30px; }
         .detail-item:last-child { margin-bottom: 0; }
@@ -164,16 +164,38 @@
         .detail-info { font-size: 1.3rem; margin: 5px 0; font-family: 'Playfair Display', serif;}
         .detail-sub { font-size: 1rem; color: #666; font-family: 'Lato', sans-serif;}
         .map-link { display: inline-block; margin-top: 8px; color: var(--text-light); text-decoration: underline; font-size: 0.9rem; }
-
-        /* WIDGET CLIMA */
         .weather-widget { margin: 20px 0 40px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: none; }
 
-        /* BOTONES */
+        /* --- 7. BOTONES --- */
         .action-buttons { display: flex; flex-direction: column; gap: 15px; margin-top: 30px; }
-        .btn { display: block; padding: 16px; text-decoration: none; border-radius: 50px; font-weight: bold; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; transition: transform 0.2s; }
+        .btn { display: block; padding: 16px; text-decoration: none; border-radius: 50px; font-weight: bold; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; transition: transform 0.2s; cursor: pointer; }
         .btn:active { transform: scale(0.98); }
         .btn-rsvp { background-color: var(--btn-black); color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
         .btn-gift { background-color: white; color: var(--text-main); border: 1px solid #ccc; }
+
+        /* --- 8. MODAL DE AVISO (PRÓXIMAMENTE) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 2000;
+            display: none; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .modal-box {
+            background: white; width: 85%; max-width: 350px;
+            padding: 30px 20px; border-radius: 15px;
+            text-align: center; transform: scale(0.9); transition: transform 0.3s;
+        }
+        .modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--gold); margin-bottom: 10px; }
+        .modal-text { font-size: 1rem; color: #555; margin-bottom: 20px; line-height: 1.5; }
+        .modal-close-btn {
+            background: var(--btn-black); color: white; border: none;
+            padding: 10px 25px; border-radius: 30px; cursor: pointer;
+            font-weight: bold; text-transform: uppercase; font-size: 0.8rem;
+        }
+        /* Clases para animar entrada */
+        .modal-open { display: flex; }
+        .modal-visible { opacity: 1; }
+        .modal-visible .modal-box { transform: scale(1); }
 
     </style>
 </head>
@@ -189,6 +211,13 @@
 
     <main class="container" id="main-content">
         
+        <div id="scroll-hint" class="scroll-hint">
+            <span>Desliza</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            </svg>
+        </div>
+
         <h1>Ramón Reyes</h1>
         <p class="subtitle">¡Llegamos al 5° piso!</p>
 
@@ -238,29 +267,49 @@
         <div class="detail-title" style="margin-top: 40px;">Un viaje en el tiempo</div>
         
         <div class="gallery-section">
-            <div class="row-wrapper">
-                <div class="collage-track scroll-right" id="track-1"></div>
-            </div>
-            <div class="row-wrapper">
-                <div class="collage-track scroll-left" id="track-2"></div>
-            </div>
-            <div class="row-wrapper">
-                <div class="collage-track scroll-right" id="track-3"></div>
-            </div>
+            <div class="row-wrapper"><div class="collage-track scroll-right" id="track-1"></div></div>
+            <div class="row-wrapper"><div class="collage-track scroll-left" id="track-2"></div></div>
+            <div class="row-wrapper"><div class="collage-track scroll-right" id="track-3"></div></div>
         </div>
+
         <div class="action-buttons">
-            <a href="regalos.html" class="btn btn-gift">🎁 Ver Mesa de Regalos</a>
+            <div class="btn btn-gift" onclick="showGiftModal()">🎁 Ver Mesa de Regalos</div>
+            
             <a href="https://wa.me/5211234567890?text=¡Hola!%20Confirmo%20mi%20asistencia." class="btn btn-rsvp">Confirmar Asistencia</a>
         </div>
 
     </main>
 
+    <div id="gift-modal" class="modal-overlay" onclick="closeGiftModal()">
+        <div class="modal-box" onclick="event.stopPropagation()"> <div class="modal-title">¡Espérame tantito!</div>
+            <p class="modal-text">
+                Todavía estoy decidiendo qué me gustaría (es difícil llegar a los 50). 
+                <br><br>
+                Date una vuelta en unos días, ¡prometo tenerla lista!
+            </p>
+            <button class="modal-close-btn" onclick="closeGiftModal()">Entendido</button>
+        </div>
+    </div>
+
+
     <script>
         /* --- 1. LÓGICA DE PORTADA Y FECHAS --- */
         function openInvite() {
             document.getElementById('cover-screen').classList.add('hidden');
-            setTimeout(() => { document.getElementById('main-content').classList.add('visible'); }, 300);
+            setTimeout(() => { 
+                document.getElementById('main-content').classList.add('visible'); 
+                setTimeout(() => {
+                    const hint = document.getElementById('scroll-hint');
+                    hint.classList.add('show-hint');
+                    hint.classList.add('bounce');
+                }, 1000);
+            }, 300);
         }
+
+        window.addEventListener('scroll', function() {
+            const hint = document.getElementById('scroll-hint');
+            if (window.scrollY > 50) hint.classList.add('fade-out');
+        });
 
         const eventDate = new Date(2026, 1, 21, 13, 0, 0).getTime();
         const timer = setInterval(() => {
@@ -274,11 +323,9 @@
         }, 1000);
 
         /* --- 2. GALERÍA AUTOMÁTICA --- */
-        // Ajuste: 40 fotos, extensión .jpeg
         const totalPhotos = 40;     
         const extension = '.jpeg';  
         
-        // Función para mezclar orden
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -289,41 +336,29 @@
 
         function populateRow(trackId) {
             const track = document.getElementById(trackId);
-            
             let photos = [];
             for (let i = 1; i <= totalPhotos; i++) photos.push(i);
-            
-            // Mezclamos para que cada fila sea única
             photos = shuffleArray(photos);
 
             const fragment = document.createDocumentFragment();
-            // Duplicamos el array para lograr el efecto infinito
             const loopPhotos = [...photos, ...photos]; 
 
             loopPhotos.forEach(num => {
                 const img = document.createElement('img');
-                
-                // NOTA: Se asume que las fotos están en la misma carpeta
                 img.src = num + extension; 
-                
                 img.loading = 'lazy'; 
                 img.alt = 'Recuerdo';
-                
-                // Si la imagen falla (error de ruta o extensión), se oculta
                 img.onerror = function() { this.style.display = 'none'; };
-
                 fragment.appendChild(img);
             });
-
             track.appendChild(fragment);
         }
 
-        // Llenar las 3 filas
         populateRow('track-1');
         populateRow('track-2');
         populateRow('track-3');
 
-        /* --- 3. CLIMA (Activar después del 15 Feb) --- */
+        /* --- 3. CLIMA --- */
         (function() {
             const now = new Date();
             const targetDate = new Date(2026, 1, 15);
@@ -332,6 +367,20 @@
                 if(w) w.style.display = 'block';
             }
         })();
+
+        /* --- 4. LÓGICA DEL MODAL DE REGALOS --- */
+        function showGiftModal() {
+            const modal = document.getElementById('gift-modal');
+            modal.classList.add('modal-open');
+            // Pequeño delay para permitir que la animación CSS funcione
+            setTimeout(() => { modal.classList.add('modal-visible'); }, 10);
+        }
+
+        function closeGiftModal() {
+            const modal = document.getElementById('gift-modal');
+            modal.classList.remove('modal-visible');
+            setTimeout(() => { modal.classList.remove('modal-open'); }, 300);
+        }
     </script>
 </body>
 </html>
