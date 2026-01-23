@@ -92,33 +92,32 @@
 
         /* --- 4. GALERÍA DE 3 FILAS (OPTIMIZADA) --- */
         .gallery-section {
-            position: relative; /* Necesario para los efectos de luz */
+            position: relative;
             width: 100%;
             overflow: hidden;
             background-color: #fafafa;
             padding: 20px 0;
             margin: 40px 0;
-            pointer-events: none; /* Sin interacción */
+            pointer-events: none; /* No se puede tocar/detener */
             user-select: none;
         }
 
-        /* EFECTO DE LUZ DESVANECIDA EN LAS ORILLAS */
+        /* Máscaras de luz a los lados */
         .gallery-section::before, .gallery-section::after {
             content: '';
             position: absolute;
-            top: 0; width: 15%; height: 100%;
+            top: 0; width: 10%; height: 100%;
             z-index: 2; pointer-events: none;
         }
-        .gallery-section::before { left: 0; background: linear-gradient(to right, #fafafa, rgba(250,250,250,0)); }
-        .gallery-section::after { right: 0; background: linear-gradient(to left, #fafafa, rgba(250,250,250,0)); }
-
+        .gallery-section::before { left: 0; background: linear-gradient(to right, #ffffff, rgba(255,255,255,0)); }
+        .gallery-section::after { right: 0; background: linear-gradient(to left, #ffffff, rgba(255,255,255,0)); }
 
         .row-wrapper {
             position: relative;
             width: 100%;
             display: flex;
             overflow: hidden;
-            margin-bottom: 15px;
+            margin-bottom: 12px; /* Espacio entre filas */
         }
 
         .collage-track {
@@ -130,22 +129,24 @@
         }
 
         .collage-track img {
-            height: 120px; /* Móvil */
+            /* ALTURA EN MÓVIL */
+            height: 110px; 
             width: auto; 
             object-fit: cover;
             border-radius: 4px;
-            margin: 0 6px; 
+            margin: 0 5px; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: #eee; /* Color de fondo mientras carga */
         }
 
-        /* PC: Fotos más grandes */
+        /* ALTURA EN PC */
         @media (min-width: 768px) {
             .collage-track img { height: 180px; margin: 0 10px; }
         }
 
-        /* ANIMACIONES (Misma velocidad para todos: 240s) */
-        .scroll-left { animation: scrollLeft 240s linear infinite; }
-        .scroll-right { animation: scrollRight 240s linear infinite; }
+        /* ANIMACIONES (Lentas y suaves) */
+        .scroll-left { animation: scrollLeft 180s linear infinite; }
+        .scroll-right { animation: scrollRight 180s linear infinite; }
 
         @keyframes scrollLeft {
             0% { transform: translateX(0); }
@@ -273,8 +274,10 @@
             document.getElementById('s').innerText = Math.floor((gap % (1000 * 60)) / 1000).toString().padStart(2, '0');
         }, 1000);
 
-        /* --- 2. GENERADOR DE GALERÍA DE 3 FILAS ALEATORIAS --- */
-        const totalPhotos = 40;
+        /* --- 2. GALERÍA AUTOMÁTICA (MODO SIMPLE) --- */
+        // CONFIGURACIÓN:
+        const totalPhotos = 40;     // Cantidad de fotos
+        const extension = '.jpeg';  // SI TUS FOTOS NO CARGAN, CAMBIA ESTO A '.jpg' O '.JPG'
         
         // Mezclar aleatoriamente
         function shuffleArray(array) {
@@ -297,10 +300,17 @@
 
             loopPhotos.forEach(num => {
                 const img = document.createElement('img');
-                // RUTA CORREGIDA HACIA LA CARPETA 'Original/'
-                img.src = `Original/${num}.jpeg`; 
+                
+                // --- AQUÍ ESTÁ EL CAMBIO IMPORTANTE ---
+                // Ahora busca la foto directamente (ej: "1.jpeg") en la misma carpeta.
+                img.src = num + extension; 
+                
                 img.loading = 'lazy'; 
                 img.alt = 'Recuerdo';
+                
+                // Si la imagen falla (ej. era .jpg y no .jpeg), ocúltala para que no se vea el icono roto
+                img.onerror = function() { this.style.display = 'none'; };
+
                 fragment.appendChild(img);
             });
 
