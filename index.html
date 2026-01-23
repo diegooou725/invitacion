@@ -90,33 +90,36 @@
         @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(0.98); } 100% { opacity: 1; transform: scale(1); } }
         .time-lbl { font-size: 0.65rem; text-transform: uppercase; color: #999; letter-spacing: 1px; }
 
-        /* --- 4. INDICADOR DE SCROLL --- */
+        /* --- 4. INDICADOR DE SCROLL (CORREGIDO) --- */
         .scroll-hint {
-            position: fixed;
-            bottom: 30px;
+            position: fixed; /* Ahora sí se quedará fijo */
+            bottom: 50px;    /* Un poco más arriba para evitar barras de navegación */
             left: 50%;
             transform: translateX(-50%);
-            z-index: 100;
-            color: var(--gold);
-            font-size: 0.9rem;
+            z-index: 10000;  /* Muy por encima de todo */
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.8); /* Fondo sutil para que se lea siempre */
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            opacity: 0; 
-            transition: opacity 0.5s ease;
-            pointer-events: none; 
-            display: flex;
+            font-weight: bold;
+            display: none; /* Oculto al inicio */
             flex-direction: column;
             align-items: center;
             gap: 5px;
+            transition: opacity 0.5s ease;
         }
+
         .bounce { animation: bounce 2s infinite; }
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-10px);}
-            60% {transform: translateY(-5px);}
+            0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
+            40% {transform: translateX(-50%) translateY(-10px);}
+            60% {transform: translateX(-50%) translateY(-5px);}
         }
-        .fade-out { opacity: 0 !important; }
-        .show-hint { opacity: 1; }
+        .fade-out { opacity: 0 !important; pointer-events: none; }
 
         /* --- 5. GALERÍA --- */
         .gallery-section {
@@ -173,7 +176,7 @@
         .btn-rsvp { background-color: var(--btn-black); color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
         .btn-gift { background-color: white; color: var(--text-main); border: 1px solid #ccc; }
 
-        /* --- 8. MODAL DE AVISO (PRÓXIMAMENTE) --- */
+        /* --- 8. MODAL DE AVISO --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.7); z-index: 2000;
@@ -192,7 +195,6 @@
             padding: 10px 25px; border-radius: 30px; cursor: pointer;
             font-weight: bold; text-transform: uppercase; font-size: 0.8rem;
         }
-        /* Clases para animar entrada */
         .modal-open { display: flex; }
         .modal-visible { opacity: 1; }
         .modal-visible .modal-box { transform: scale(1); }
@@ -209,15 +211,15 @@
         </div>
     </div>
 
+    <div id="scroll-hint" class="scroll-hint bounce">
+        <span>Desliza</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+        </svg>
+    </div>
+
     <main class="container" id="main-content">
         
-        <div id="scroll-hint" class="scroll-hint">
-            <span>Desliza</span>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
-            </svg>
-        </div>
-
         <h1>Ramón Reyes</h1>
         <p class="subtitle">¡Llegamos al 5° piso!</p>
 
@@ -274,14 +276,14 @@
 
         <div class="action-buttons">
             <div class="btn btn-gift" onclick="showGiftModal()">🎁 Ver Mesa de Regalos</div>
-            
             <a href="https://wa.me/5211234567890?text=¡Hola!%20Confirmo%20mi%20asistencia." class="btn btn-rsvp">Confirmar Asistencia</a>
         </div>
 
     </main>
 
     <div id="gift-modal" class="modal-overlay" onclick="closeGiftModal()">
-        <div class="modal-box" onclick="event.stopPropagation()"> <div class="modal-title">¡Espérame tantito!</div>
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <div class="modal-title">¡Espérame tantito!</div>
             <p class="modal-text">
                 Todavía estoy decidiendo qué me gustaría (es difícil llegar a los 50). 
                 <br><br>
@@ -293,24 +295,29 @@
 
 
     <script>
-        /* --- 1. LÓGICA DE PORTADA Y FECHAS --- */
+        /* --- 1. LÓGICA DE APERTURA --- */
         function openInvite() {
             document.getElementById('cover-screen').classList.add('hidden');
             setTimeout(() => { 
                 document.getElementById('main-content').classList.add('visible'); 
+                
+                // Mostrar la ayuda de scroll después de entrar
                 setTimeout(() => {
-                    const hint = document.getElementById('scroll-hint');
-                    hint.classList.add('show-hint');
-                    hint.classList.add('bounce');
-                }, 1000);
+                    document.getElementById('scroll-hint').style.display = 'flex';
+                }, 800);
+
             }, 300);
         }
 
+        /* --- 2. OCULTAR HINT AL SCROLLEAR --- */
         window.addEventListener('scroll', function() {
             const hint = document.getElementById('scroll-hint');
-            if (window.scrollY > 50) hint.classList.add('fade-out');
+            if (window.scrollY > 50) { 
+                hint.classList.add('fade-out'); 
+            }
         });
 
+        /* --- 3. CUENTA REGRESIVA --- */
         const eventDate = new Date(2026, 1, 21, 13, 0, 0).getTime();
         const timer = setInterval(() => {
             const now = new Date().getTime();
@@ -322,7 +329,7 @@
             document.getElementById('s').innerText = Math.floor((gap % (1000 * 60)) / 1000).toString().padStart(2, '0');
         }, 1000);
 
-        /* --- 2. GALERÍA AUTOMÁTICA --- */
+        /* --- 4. GALERÍA --- */
         const totalPhotos = 40;     
         const extension = '.jpeg';  
         
@@ -358,7 +365,7 @@
         populateRow('track-2');
         populateRow('track-3');
 
-        /* --- 3. CLIMA --- */
+        /* --- 5. CLIMA --- */
         (function() {
             const now = new Date();
             const targetDate = new Date(2026, 1, 15);
@@ -368,11 +375,10 @@
             }
         })();
 
-        /* --- 4. LÓGICA DEL MODAL DE REGALOS --- */
+        /* --- 6. MODAL --- */
         function showGiftModal() {
             const modal = document.getElementById('gift-modal');
             modal.classList.add('modal-open');
-            // Pequeño delay para permitir que la animación CSS funcione
             setTimeout(() => { modal.classList.add('modal-visible'); }, 10);
         }
 
